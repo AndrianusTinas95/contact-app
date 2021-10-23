@@ -25,7 +25,7 @@ const simpanContact = (nama, email, noHP) => {
         email,
         noHP
     };
-    
+
     const contacts = loadContacts();
 
     const duplikat = contacts.find(
@@ -63,14 +63,50 @@ const simpanContact = (nama, email, noHP) => {
 
 }
 
-const listContact = () =>{
+const listContact = () => {
     const contacts = loadContacts();
     console.log(chalk.cyan.bold('Daftar Kontak : '));
-    contacts.forEach((contact,i)=>{
+    contacts.forEach((contact, i) => {
         console.log(`${i + 1}. ${contact.nama} - ${contact.noHP}`);
     });
 }
 
+const detailContact = (nama) => {
+    const contacts = loadContacts();
+    const contact = contacts.find(
+        (contact) => contact.nama.toLowerCase() === nama.toLowerCase()
+    )
+
+    if (!contact) {
+        console.log(chalk.red.bold(`${nama} tidak ditemukan`));
+        return false;
+    }
+
+    console.log(chalk.cyan.bold(contact.nama));
+    console.log(contact.noHP);
+    if(contact.email){
+        console.log(contact.email);
+    }
+}
+
+const deleteContact= (nama)=>{
+    const contacts = loadContacts();
+    const newContact = contacts.filter(
+        (contact)=> contact.nama.toLowerCase() !== nama.toLowerCase()
+    );
+
+    if (contacts.length === newContact.length) {
+        console.log(chalk.red.bold(`${nama} tidak ditemukan`));
+        return false;
+    }
+
+    fs.writeFileSync('data/contacts.json',JSON.stringify(newContact));
+    console.log(chalk.green.bold(`${nama} berhasil dihapus`));
+}
+
 module.exports = {
-    simpanContact, listContact
+    simpanContact,
+    listContact,
+    detailContact,
+    deleteContact
 }
